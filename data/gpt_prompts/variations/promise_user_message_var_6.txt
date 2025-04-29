@@ -1,0 +1,55 @@
+Earnings call presentation text for [company_name_placeholder] on [date_placeholder] by CEO [presenter_name_placeholder]: ```
+[presentation_text_placeholder]
+```
+
+
+Instructions: ```
+Your task is to identify promises within the provided earnings call presentation text. Use the definitions and criteria provided below to guide your analysis. The text of the earnings call is enclosed within triple backticks for clarity.
+```
+
+Theoretical Definition of a CEO Promise: ```
+We define a CEO promise as a publicly communicated, future-oriented statement in which a firm’s chief executive conveys a commitment to deliver a favorable, firm-specific action or outcome, thereby creating an expectation that not fulfilling this commitment will harm the CEO or the organization’s credibility and reputation among external stakeholders.
+
+
+The definition includes the following components:
+1. Publicly Communicated. A statement qualifies as a CEO promise only if delivered in a forum accessible to external audiences (e.g., earnings calls, press conferences, investor presentations). By making the commitment visible to outsiders, the CEO elevates accountability and reputational risk beyond what would apply to internal goals alone.
+2. Future-Oriented. The commitment must target an action or outcome yet to occur. Simple observations of current realities or explanations of past events lack the forward-looking impetus essential for promise-making. The defining element is a pledge about what will happen, rather than what has happened or is happening.
+3. Commitment. CEO promises are marked by language that expresses a determined intent or a strong likelihood of fulfillment (e.g., “We will,” “We remain committed to,” “We expect to deliver”). There can be variation in the level of commitment—from more confident statements indicating stronger commitment to more tentative phrases that signal weaker commitment. However, purely tentative or heavily qualified statements (e.g., “We might,” “We hope,” “It's possible that we achieve”) typically do not establish the personal or organizational obligation that characterizes a promise.
+4. Firm-Specific. The promised outcome must stem from initiatives the CEO and firm can directly influence, such as product launches, strategic shifts, or performance goals. Broader economic or industry predictions, over which the firm has limited control, do not meet this criterion.
+5. Favorable or Beneficial Outcome. A CEO promise must herald a positive future state or impact that stakeholders would interpret as advantageous for the firm. Neutral or pessimistic statements about the firm’s prospects do not constitute a promise because they fail to generate an expectation of beneficial delivery.
+6. Material Significance and Reputational Risk. Finally, the commitment must carry enough weight to meaningfully affect external stakeholders’ perception of the CEO and the firm if it goes unfulfilled. Promises involving trivial outcomes will not invoke the same reputational repercussions and therefore fall short of this standard.
+
+
+The definition does not include factual statements, assumptions, risk factors, or disclaimers. 
+
+```
+
+Output Format:
+Present your findings in valid JSON format. Your JSON should contain an array of objects under the key "promises". Each promise object must adhere to the following structure:
+
+{
+  "promises": [
+    {
+      "1-promise-verbatim": "The exact and full text of the identified promise. Ensure that excerpts contain all relevant context needed to interpret them - in other words don't extract small snippets that are missing important context.",
+      "2-promise-explain": "A thorough explanation of what the promise is.",
+      "3-promise-delivery-time": "The specified fulfillment date or time frame for the promise (e.g., a specific date, a number of months, or 'unclear' if not specified).",
+      "4-promise-horizon": "The time until fulfillment, expressed in months (if a range, separate with a dash, e.g., '7-12'; if unclear, state 'unclear').",
+      "5-commitment-degree": "The inferred level of commitment from the CEO statement: choose from 'no-commitment', 'moderate-commitment', or 'strong-commitment'.",
+      "6-self-evaluation": "An objective evaluation of the statement as a promise. Explain your reasoning regarding whether it meets the criteria (Explicit, Future-Oriented, Some Commitment, Firm-Specific, Favorable, Material) and why it does or does not qualify.",
+      "7-is-promise": "Based on your self-evaluation, indicate whether this is indeed a promise: 'yes', 'no', or 'uncertain'.",
+      "8-financial-guidance": "Indicate whether this statement is financial guidance: 'yes' or 'no'. (Financial guidance includes quantitative estimates such as earnings, EPS, revenue, cash flow, EBITDA, operating income, gross margin, expenses, CAPEX, and tax rate.)"
+    }
+    // Additional promise objects can be included as necessary.
+  ]
+}
+
+Some texts might not include any promises. Some might include one or many.
+
+If no promises are identified in the text, return the following JSON:
+
+{
+  "promises": []
+}
+
+```
+

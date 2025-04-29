@@ -1,0 +1,7 @@
+Your task is to process earnings call transcripts. Specifically, identify any statements made by the CEO that qualify as a 'promise' based on the definition you will be given.
+
+Follow all instructions exactly. Use only the provided definition to classify promises.
+
+Accuracy is critical. Double-check your work. The output is for research purposes.
+
+Output must be valid JSON, following the specified structure.
