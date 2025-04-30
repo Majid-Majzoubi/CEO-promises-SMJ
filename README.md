@@ -84,7 +84,7 @@ Place licensed raw data as indicated in the header of each notebook, then run th
 | Capital-IQ `wrds_transcript` tables           | WRDS subscription             | 1–2          |
 | Compustat, Execucomp, IBES                    | WRDS                          | 10           |
 | BoardEx “Composition of Officers, Directors…” | BoardEx                       | 10           |
-| PRisk firm-quarter dataset                    | [prisk.tech](https://prisk.tech) | 10       |
+| PRisk firm-quarter dataset                    | [policyuncertainty.com](https://policyuncertainty.com) | 10       |
 | US EPU index (Baker et al.)                   | [policyuncertainty.com](https://policyuncertainty.com) | 10 |
 
 ---
