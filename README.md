@@ -1,146 +1,149 @@
 
 
-# CEO Promises Analysis – Replication Repository
 
-Supporting material for
 
-**“Shaping Expectations, Losing Flexibility: A Study of CEO Promises as Strategic Communication Tools”**
+# CEO Promises Analysis
 
-(submitted to *Strategic Management Journal*)
+## Overview
 
-[DOWNLOAD CEO Promises Database](https://github.com/Majid-Majzoubi/ceo_promises_smj/blob/main/data/sxp1500_ceo_promises_2010_2022.xlsx)
+This repository contains the code, data, and methods for the paper:
 
----
+**"Selling Hope in Times of Need: A Study of CEO Promises as Strategic Communication Tools"**
 
-## 1. What is in this repo?
-
-We release all code required to
-
-1. download ↔ clean 69,302 Capital-IQ earnings-call transcripts (S&P 1500, 2010-2022),
-
-2. detect, parse and label the 74,017 CEO promises used in the paper,
-
-3. create the regression analysis and run every model reported in the manuscript.
-
-| Notebook / script | Main task | Key external source |
-
-|-------------------|-----------|---------------------|
-
-| **1_download_transcripts.ipynb** | Pull raw transcripts from WRDS → Capital IQ | WRDS credentials |
-
-| **2_prepare_transcripts.ipynb** | Limit to S&P1500, Keep CEO presentation only | – |
-
-| **3_find_promises.ipynb** | Call OpenAI `o3-mini` to identifies promises in calls | OpenAI API |
-
-| **4_promise_db_cleanup.ipynb** | Flatten JSON, remove guidance etc. | – |
-
-| **5_promise_horizon_measure.ipynb** | GPT prompts → months-to-delivery | OpenAI |
-
-| **6_promise_specificity_measure.ipynb** | GPT-4o scores (1 = vague … 5 = precise) | OpenAI |
-
-| **7_promise_topic_model.ipynb** | Keyword extraction (Claude-3 Sonnet) + HDBSCAN + Topic Labeling | Anthropic API |
-
-| **8_promise_db_explorations.ipynb** | Descriptive figures & sanity checks | – |
-
-| **9_promises_vs_fls.ipynb** | Compute forward-looking-statement (FLS) ratios, compare with promises | NLTK |
-
-| **10_add_regression_vars.ipynb** | Merge Compustat / Execucomp / IBES / PRisk / EPU | WRDS & public data |
-
-| **11_regression_analysis_stata.do** | All tables in the paper (`reghdfe`, `ppmlhdfe`) | Stata 17 SE |
+This study investigates CEO promises as a distinct form of strategic communication, focusing on when and why CEOs make explicit, future-oriented commitments in earnings calls. Using Large Language Models (LLMs), we analyze over 69,000 earnings call transcripts from S&P 1500 firms (2010–2022) to identify, classify, and analyze CEO promises and their antecedents.
 
 ---
 
-## 2. Folder layout
+## Repository Structure
 
-```
+### Data
 
-.
+- **sxp1500_ceo_promises_2010_2022.xlsx**: Database of all identified CEO promises (2010–2022).
 
-├─ data/ # empty by default – see § 5
+- **correlation_table_20240624.rtf**: Correlation matrix for main variables.
 
-│ ├─ gpt_prompts/ # system & user prompt templates
+- **descriptive_stats_20240624.rtf**: Descriptive statistics for the sample.
 
-├─ src_code / # copies of the *.ipynb above (optional)
+- **regression_results_20240624.doc**: Main regression results.
 
-└─ README.md # you are here
+### GPT Prompts
 
-```
+- Directory containing prompt templates used for LLM-based extraction and coding of CEO promises and their characteristics.
 
----
+### Source Code
 
-## 3. Quick start
+| File Name | Description |
 
-```bash
+|-----------------------------------|----------------------------------------------------------------------------------------------|
 
-git clone https://github.com/your-handle/ceo-promises.git
+| 1_download_transcripts.ipynb | Download earnings call transcripts from WRDS/Capital IQ. |
 
-cd ceo-promises
+| 2_prepare_transcripts.ipynb | Prepare and aggregate transcripts for analysis; identify CEO speakers. |
 
-conda create -n ceo_promises python=3.10
+| 3_find_promises.ipynb | Use OpenAI GPT API to identify and extract CEO promises from transcripts. |
 
-conda activate ceo_promises
+| 4_promise_db_cleanup.ipynb | Clean and structure the extracted promises database. |
 
-pip install -r requirements.txt # ≈ 10 min
+| 5_promise_horizon_measure.ipynb | Use LLMs to extract and code the time horizon of each promise. |
 
-```
+| 6_promise_specificity_measure.ipynb| Use LLMs to score the specificity of each promise (1–5 scale). |
 
-Set **environment variables** (do *not* hard-code in notebooks):
+| 7_promise_topic_model.ipynb | Topic modeling and clustering of promises using LLMs and unsupervised learning. |
 
-```
+| 8_promise_db_explorations.ipynb | Exploratory and descriptive analysis of the promises database. |
 
-export WRDS_USERNAME=mywrdsid
+| 9_promises_vs_fls.ipynb | Compare CEO promises to forward-looking statements (FLS) using NLP methods. |
 
-export WRDS_PASSWORD=********
+| 10_add_regression_vars.ipynb | Merge promise data with financial, CEO, and firm-level variables for regression analysis. |
 
-export OPENAI_API_KEY=sk-********
-
-export ANTHROPIC_API_KEY=sk-******** # optional – only step 7
-
-```
-
-Place licensed raw data as indicated in the header of each notebook, then run the notebooks in numerical order.
+| 11_regression_analysis_stata.do | Stata do-file for running main and robustness regression models. |
 
 ---
 
-## 4. Output data: A database of CEO promises
+## Methods
 
-* [sxp1500_ceo_promises_2010_2022.xlsx](https://github.com/Majid-Majzoubi/ceo_promises_smj/blob/main/data/sxp1500_ceo_promises_2010_2022.xlsx) – 74,017 promises
+### Data Collection
 
----
+- **Transcripts:** Earnings call transcripts were collected from Capital IQ Transcripts via WRDS, covering S&P 1500 firms from 2010 to 2022.
 
-## 5. Required proprietary sources (not included)
+- **CEO Identification:** CEO speakers were identified using Execucomp and BoardEx databases.
 
-| Item | Where to get it | Used in step |
+### Data Processing & Promise Extraction
 
-|------|-----------------|--------------|
+- **LLM-Based Extraction:** We used OpenAI’s latest GPT models to semantically identify CEO promises in the presentation sections of earnings calls.
 
-| Capital-IQ *wrds_transcript* tables | WRDS subscription | 1–2 |
+- **Prompt Engineering:** Custom prompts defined what constitutes a CEO promise, with instructions for extracting verbatim text, delivery horizon, and specificity.
 
-| Compustat, Execucomp, IBES | WRDS | 10 |
+- **Batch Processing:** Asynchronous and checkpointed batch processing was used for large-scale LLM calls.
 
-| BoardEx “Composition of Officers, Directors & SM” | BoardEx | 10 |
+### Promise Characterization
 
-| PRisk firm-quarter dataset | www.prisk.tech | 10 |
+- **Time Horizon:** LLMs were prompted to extract the stated or implied delivery date of each promise (in months).
 
-| US EPU index (Baker et al.) | https://policyuncertainty.com | 10 |
+- **Specificity:** Each promise was scored (1–5) for specificity and measurability using LLMs.
 
+- **Topic Modeling:** Promises were clustered into thematic categories using LLM-generated keywords and unsupervised clustering (UMAP, HDBSCAN).
 
----
+### Data Assembly & Analysis
 
-## 7. Citing the dataset
+- **Merging:** Promise-level data was merged with firm, CEO, and transcript-level variables (financials, performance, uncertainty, etc.).
 
-Please cite both the article and this repository if you use the code or the CEO-promises dataset:
+- **Statistical Analysis:** Main regressions were run in Stata (`reghdfe`, `ppmlhdfe`) to test hypotheses about the antecedents and contexts of CEO promise-making.
 
-> [...]
-
-
-
----
-
-## 8. Contact
-
-[...]
+- **Exploratory Analysis:** Additional notebooks provide descriptive statistics, visualizations, and robustness checks.
 
 ---
 
-Code © 2025 the authors, released under the MIT License. De-identified data under CC-BY-4.0; original Capital-IQ / WRDS material remains subject to their respective licences.
+## Key Findings
+
+- **CEO promises are more frequent** when CEOs are new, female, or following missed earnings expectations—contexts where managing stakeholder expectations is critical.
+
+- **Promise-making declines** under high uncertainty or resource constraints, when preserving strategic flexibility is more important.
+
+- **Promise characteristics (horizon, specificity, topic)** vary systematically with context, and CEOs use strategic ambiguity (vague timelines, less specificity) especially during periods of uncertainty (e.g., COVID-19).
+
+- **Comprehensive Database:** The project produces the first large-scale, open database of CEO promises, enabling future research on executive communication and strategic signaling.
+
+---
+
+## How to Use This Repository
+
+1. **Prerequisites:**
+
+- Python 3.8+ (for Jupyter notebooks)
+
+- Stata 16+ (for regression analysis)
+
+- WRDS/CIQ access (for transcript download)
+
+- OpenAI API key (for LLM-based scripts)
+
+2. **Reproducing the Pipeline:**
+
+- Run the notebooks in order (`1_download_transcripts.ipynb` → `10_add_regression_vars.ipynb`) to reproduce the data pipeline.
+
+- Use `11_regression_analysis_stata.do` for main regression analyses.
+
+- Data files and prompt templates are provided for reference and reproducibility.
+
+3. **Data Availability:**
+
+- The processed CEO promises database (`sxp1500_ceo_promises_2010_2022.xlsx`) is available for download, subject to data provider restrictions.
+
+---
+
+## Citation
+
+If you use this code or data, please cite:
+
+> [Author Names]. (2024). "Selling Hope in Times of Need: A Study of CEO Promises as Strategic Communication Tools." Working paper. [Add DOI or link when available]
+
+---
+
+## Contact
+
+For questions or issues, please contact [Your Name] at [Your Email].
+
+---
+
+**Last updated:** April 2025
