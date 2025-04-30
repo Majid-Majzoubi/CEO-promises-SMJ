@@ -5,7 +5,7 @@ Supporting material for
 **“Shaping Expectations, Losing Flexibility: A Study of CEO Promises as Strategic Communication Tools”**  
 <sub>(Submitted to *Strategic Management Journal*)</sub>
 
-[**⬇️ DOWNLOAD CEO Promises Database**](https://raw.githubusercontent.com/Majid-Majzoubi/ceo_promises_smj/main/data/sxp1500_ceo_promises_2010_2022.xlsx)
+[**⬇️ DOWNLOAD CEO Promises Database**](data/gpt_prompts/sxp1500_ceo_promises_2010_2022.xlsx)
 
 
 ---
@@ -73,7 +73,7 @@ Place licensed raw data as indicated in the header of each notebook, then run th
 
 ## 4. Output data: A database of CEO promises
 
-- [**sxp1500_ceo_promises_2010_2022.xlsx**](https://raw.githubusercontent.com/Majid-Majzoubi/ceo_promises_smj/main/data/sxp1500_ceo_promises_2010_2022.xlsx)
+- [**sxp1500_ceo_promises_2010_2022.xlsx**](data/gpt_prompts/sxp1500_ceo_promises_2010_2022.xlsx)
   *74,017 promises, with metadata and LLM-based coding*
 
 ---
