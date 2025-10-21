@@ -1,0 +1,105 @@
+# CEO Promises Project - Git Ignore File
+
+# Environment and credentials
+.env
+.env.local
+*.env
+
+# API Keys (extra safety)
+*api_key*
+*API_KEY*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Data files (large and proprietary)
+data/transcripts_raw_v2/*.db
+data/*.db
+data/*.pkl
+data/*.csv
+data/*.dta
+data/*.xlsx
+data/*.xls
+data/*.parquet
+
+# Keep only the final output and templates
+!data/gpt_prompts/*.txt
+!data/gpt_prompts/sxp1500_ceo_promises_2010_2022.xlsx
+
+# Log files
+*.log
+*.out
+*.txt.log
+src_code/*.log
+
+# Stata temporary files
+*.dta~
+*.smcl
+*.gph
+~*.do
+*.do.stswp
+
+# Regression output
+*.doc
+*.rtf
+regression_results_*.doc
+correlation_table_*.rtf
+descriptives_table_*.rtf
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Backup files
+*.bak
+*.backup
+*_backup.*
+
