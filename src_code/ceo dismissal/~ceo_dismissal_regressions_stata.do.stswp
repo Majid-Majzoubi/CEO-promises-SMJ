@@ -1,0 +1,270 @@
+
+********************************************************************************
+* 1. SETUP AND DATA LOADING
+********************************************************************************
+
+* Set working directory
+cd "..."
+
+* Load dataset
+use "ceo_dismissal_reg_data_with_ranking_batches_all.dta", clear
+
+*import excel "/Users/majid/Dropbox/Promises/transcripts_wrds/data/ceo_dismissal_reg_data_with_ranking_batches_all_merged_basemodels.xlsx", sheet("Sheet1") firstrow clear
+
+* Set panel structure
+xtset gvkey year
+
+* Filter data to 2010 onwards
+keep if year >= 2010
+
+********************************************************************************
+* 2. VARIABLE CREATION AND TRANSFORMATIONS
+********************************************************************************
+
+* --- CEO Characteristics ---
+
+* Convert CEO duality to numeric (1 if dual role, 0 otherwise)
+generate ceo_dual_numeric = (ceo_dual == "True")
+
+* Replace missing CEO share ownership with 0
+replace ceo_total_shares_owned = 0 if missing(ceo_total_shares_owned)
+
+* Create log of CEO shares (adding 1 to handle zeros)
+generate log_ceo_shares = log(ceo_total_shares_owned + 1)
+
+* --- Broken Promises Variables ---
+
+* Create version with zeros instead of missing values
+generate no_broken_promises_roll2_0 = no_broken_promises_roll2
+replace no_broken_promises_roll2_0 = 0 if no_broken_promises_roll2 == .
+
+* Create version with zeros instead of missing values
+generate no_broken_promises_roll3_0 = no_broken_promises_roll3
+replace no_broken_promises_roll3_0 = 0 if no_broken_promises_roll3 == .
+
+* Create version with zeros instead of missing values
+generate no_broken_promises_roll5_0 = no_broken_promises_roll5
+replace no_broken_promises_roll5_0 = 0 if no_broken_promises_roll5 == .
+
+* Create version with zeros instead of missing values
+generate no_promises_prior_roll2_0 = no_promises_prior_roll2
+replace no_promises_prior_roll2_0 = 0 if no_promises_prior_roll2 == .
+
+* Create version with zeros instead of missing values
+generate no_promises_prior_roll3_0 = no_promises_prior_roll3
+replace no_promises_prior_roll3_0 = 0 if no_promises_prior_roll3 == .
+
+* Create version with zeros instead of missing values
+generate no_promises_prior_roll5_0 = no_promises_prior_roll5
+replace no_promises_prior_roll5_0 = 0 if no_promises_prior_roll5 == .
+
+* Create binary indicator for any broken promises
+generate no_broken_promises_roll3_dummy = 0
+replace no_broken_promises_roll3_dummy = 1 if no_broken_promises_roll3_0 > 0
+
+generate no_broken_promises_roll5_dummy = 0
+replace no_broken_promises_roll5_dummy = 1 if no_broken_promises_roll5_0 > 0
+
+* --- Percentile Rank of Broken Promises Within Year ---
+
+* Calculate rank within year
+bysort year: egen r_bp = rank(no_broken_promises_roll3_0)
+
+* Count observations per year
+bysort year: gen N_y = _N
+
+* Calculate fractional rank in (0,1)
+generate p_bp = (r_bp - 0.5) / N_y
+
+* Scale to 0-100 for percentile interpretation (optional)
+generate p100_bp = 100 * p_bp
+
+
+* Total assets
+generate at_0 = atq
+replace at_0 = 0 if atq == .
+
+generate at_0_log = log(at_0 +10)
+
+
+
+
+* Set panel structure
+xtset gvkey year
+
+********************************************************************************
+* VARIABLE LABELS
+********************************************************************************
+
+* --- CEO Characteristics Variables ---
+label variable ceo_dual_numeric "CEO duality"
+label variable log_ceo_shares "Log CEO shares"
+
+* --- Broken Promises Variables (Zero-filled) ---
+label variable no_broken_promises_roll2_0 "Broken promises (2yr)"
+label variable no_broken_promises_roll3_0 "Broken promises (3yr)"
+label variable no_broken_promises_roll5_0 "Broken promises (5yr)"
+
+* --- Prior Promises Variables (Zero-filled) ---
+label variable no_promises_prior_roll2_0 "Prior promises (2yr)"
+label variable no_promises_prior_roll3_0 "Prior promises (3yr)"
+label variable no_promises_prior_roll5_0 "Prior promises (5yr)"
+
+* --- Binary Indicators ---
+label variable no_broken_promises_roll3_dummy "Broken promise dummy"
+label variable no_broken_promises_roll5_dummy "Broken promise dummy"
+
+
+* --- Percentile Ranking Variables ---
+label variable r_bp "BP rank"
+label variable N_y "N per year"
+label variable p_bp "BP fractional rank"
+label variable p100_bp "Broken promise percentile"
+
+* --- Financial Variables ---
+label variable at_0 "Total assets"
+label variable at_0_log "Log total assets"
+
+* --- Winsorized Variables ---
+label variable no_broken_promises_roll3_0_w99 "Broken promises (3yr)(winsorized)"
+label variable no_promises_prior_roll3_w99 "Prior promises (3yr)(winsorized)"
+
+* --- Existing Variables (for reference) ---
+label variable involuntary_dismissal "CEO dismissal"
+label variable ceo_director "CEO/Director"
+label variable tobin_q "Tobin's Q"
+label variable earnings_volatility "Earnings volatility"
+label variable rank_ceo "CEO rank"
+label variable NumberDirectors "Board size"
+label variable gvkey "GVKEY"
+label variable year "Year"
+
+********************************************************************************
+* 2.5 Correlations Tables
+********************************************************************************
+estpost correlate involuntary_dismissal no_broken_promises_roll5_0 no_promises_prior_roll5_0 ///
+        ceo_director ceo_dual_numeric log_ceo_shares ///
+        at_0_log tobin_q earnings_volatility rank_ceo_raw , matrix
+
+esttab using "ceo_dismissal_correlation_matrix.csv", ///
+        replace ///
+        unstack ///
+        not ///
+        noobs ///
+        compress ///
+        plain ///
+		label
+
+		
+
+********************************************************************************
+* SUMMARY STATISTICS TABLE
+********************************************************************************
+
+estpost summarize involuntary_dismissal no_broken_promises_roll5_0 no_promises_prior_roll5_0 ///
+        ceo_director ceo_dual_numeric log_ceo_shares ///
+        at_0_log tobin_q earnings_volatility rank_ceo_raw 
+
+esttab using "ceo_dismissal_summary_statistics.csv", ///
+        replace ///
+        cells("mean(fmt(3)) sd(fmt(3)) min(fmt(3)) max(fmt(3)) count(fmt(0))") ///
+        noobs ///
+        compress ///
+        plain ///
+        label ///
+        collabels("Mean" "Std Dev" "Min" "Max" "N")
+		
+
+		
+* First, preserve your data
+preserve
+
+* Keep only the observations used in your regression
+* This ensures we're looking at the exact same sample
+xtlogit involuntary_dismissal no_broken_promises_roll3_0  ///
+        ceo_director ceo_dual_numeric log_ceo_shares ///
+        at_0_log tobin_q earnings_volatility i.year, ///
+        re vce(cluster gvkey)
+
+* Keep only observations that were actually used in the regression
+keep if e(sample)
+
+summarize no_broken_promises_roll3_0, detail
+summarize no_promises_prior_roll3_0, detail
+
+
+* 1. Count unique gvkey values (your panel identifier)
+codebook gvkey
+* Or alternatively:
+distinct gvkey
+
+* 2. Count unique execid values (assuming this variable exists in your dataset)
+codebook execid
+* Or:
+distinct execid
+
+* 3. Count the number of involuntary dismissals (where involuntary_dismissal == 1)
+tab involuntary_dismissal
+* Or for just the count of 1s:
+count if involuntary_dismissal == 1
+
+* Summary statistics for the sample
+summarize involuntary_dismissal gvkey execid
+
+* Restore your original data
+restore
+
+********************************************************************************
+* 3. REGRESSION ANALYSIS
+********************************************************************************
+
+* Model 1: Continuous broken promises variable (with zeros for missing)
+xtlogit involuntary_dismissal no_broken_promises_roll3_0  ///
+        ceo_director ceo_dual_numeric log_ceo_shares ///
+        at_0_log tobin_q earnings_volatility i.year, ///
+        re vce(cluster gvkey)
+
+outreg2 using regression_ceo_dismissal_3.doc, ///
+        replace word label dec(3) ///
+        stats(coef se pval) noaster ///
+        paren(se) bracket(pval) 
+
+* Model 2: Binary broken promises indicator
+xtlogit involuntary_dismissal no_broken_promises_roll3_dummy  ///
+        ceo_director ceo_dual_numeric log_ceo_shares ///
+        at_0_log tobin_q earnings_volatility  i.year, ///
+        re vce(cluster gvkey)
+
+outreg2 using regression_ceo_dismissal_3.doc, ///
+        append word label dec(3) ///
+        stats(coef se pval) noaster ///
+        paren(se) bracket(pval) 
+
+* Model 2: Binary broken promises indicator
+xtlogit involuntary_dismissal no_broken_promises_roll3_0  no_promises_prior_roll3_0 ///
+        ceo_director ceo_dual_numeric log_ceo_shares ///
+        at_0_log tobin_q earnings_volatility  i.year, ///
+        re vce(cluster gvkey)
+
+outreg2 using regression_ceo_dismissal_3.doc, ///
+        append word label dec(3) ///
+        stats(coef se pval) noaster ///
+        paren(se) bracket(pval) 
+
+		
+* Model 3: Percentile rank of broken promises
+* Note: Using involuntary_dismissal_dummy - verify if this is correct
+xtlogit involuntary_dismissal p100_bp ///
+        ceo_director ceo_dual_numeric log_ceo_shares ///
+        at_0_log tobin_q earnings_volatility  i.year, ///
+        re vce(cluster gvkey)
+
+outreg2 using regression_ceo_dismissal_3.doc, ///
+        append word label dec(3) ///
+        stats(coef se pval) noaster ///
+        paren(se) bracket(pval)
+
+		
+
+		
+		
