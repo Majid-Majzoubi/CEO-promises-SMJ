@@ -42,7 +42,7 @@ Located in `src_code/ceo dismissal/`:
 
 | Notebook / Script                                  | Main Task                                                      |
 |---------------------------------------------------|----------------------------------------------------------------|
-| **promise_follow_up_final.ipynb**                  | Use GPT-4o + web search to audit promise delivery status      |
+| **promise_follow_up_final.ipynb**                  | Use GPT-5 + web search to audit promise delivery status      |
 | **promise_follow_up_batch2_final.ipynb**          | Batch 2 of promise follow-up (continuation)                    |
 | **promise_follow_up_regressions_db_final.ipynb**  | Prepare CEO dismissal regression dataset                       |
 | **promise_follow_up_regressions_db_batch2_final.ipynb** | Merge batch 2 data for CEO dismissal analysis           |
