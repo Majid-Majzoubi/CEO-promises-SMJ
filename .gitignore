@@ -55,7 +55,10 @@ data/*.parquet
 
 # Keep only the final output and templates
 !data/gpt_prompts/*.txt
-!data/gpt_prompts/sxp1500_ceo_promises_2010_2022.xlsx
+!data/CEO_promises_database_2025.csv
+
+# Do not sync DB with text (large/proprietary)
+data/CEO_promises_database_2025_with_text.csv
 
 # Log files
 *.log
