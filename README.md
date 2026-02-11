@@ -140,10 +140,8 @@ ANTHROPIC_API_KEY=sk-your-anthropic-key
 3. **Run Stata script** (`11_regression_analysis_stata.do`) for final regressions
 4. **(Optional)** Run CEO dismissal analysis notebooks in `src_code/ceo dismissal/`
 
-**Note:** Running the full pipeline from scratch will take considerable time and API costs:
-- Notebook 3 (promise identification): ~$2,000-3,000 in OpenAI API costs
-- Notebooks 5-6 (horizon & specificity): ~$500-1,000
-- CEO dismissal follow-up: ~$1,000-1,500
+**Note:** Running the full pipeline from scratch will take considerable time and API costs
+
 
 ---
 
