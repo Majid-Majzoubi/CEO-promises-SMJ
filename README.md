@@ -99,7 +99,7 @@ Located in `src_code/ceo dismissal/`:
 ### Installation
 
 ```bash
-git clone https://github.com/your-handle/ceo-promises.git
+git clone https://github.com/Majid-Majzoubi/CEO-promises-SMJ.git
 cd ceo-promises
 
 # Create virtual environment
