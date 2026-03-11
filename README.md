@@ -147,7 +147,7 @@ ANTHROPIC_API_KEY=sk-your-anthropic-key
 
 ## 4. Output data: A database of CEO promises
 
-The main output is a database of **74,017 CEO promises** extracted from 69,302 S&P 1500 earnings-call transcripts (2010–2022). You can download it directly — no coding required:
+The main output is a database of **74,017 CEO promises** extracted from 69,248 S&P 1500 earnings-call transcripts (2010–2022). You can download it directly — no coding required:
 
 > **[⬇️ Download CEO_promises_database_2025.csv](data/CEO_promises_database_2025.csv)**
 
